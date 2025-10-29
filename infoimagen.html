@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información de Imagen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .content-wrapper {
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tema-titulo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .tema-titulo h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .tema-titulo p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .section h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .code-container {
+            background: #2d3748;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .code-container pre {
+            margin: 0;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .glosario-item {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glosario-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .glosario-item h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .glosario-item p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .warning-box strong {
+            color: #d97706;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .method-box {
+            background: #dbeafe;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .method-box strong {
+            color: #2563eb;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-box {
+            background: #dcfce7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #16a34a;
+        }
+
+        .info-box strong {
+            color: #15803d;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .tema-titulo h2 {
+                font-size: 1.5em;
+            }
+
+            .section h3 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al Catálogo</a>
+        
+        <div class="header">
+            <h1>Realizado por: Ian Martin Aguilar Alejo</h1>
+            <p>Especialidad de IA del CBTIS 144</p>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="tema-titulo">
+                <h2>Información de Imagen</h2>
+                <p>Propiedades con OpenCV</p>
+            </div>
+
+            <div class="section">
+                <h3>📝 Código del Ejemplo</h3>
+                <div class="code-container">
+                    <pre>
+import cv2
+
+img = cv2.imread('gato.jpg')
+print("Dimensiones:", img.shape) # Dimensiones de la imagen. El formato es: (alto, ancho, canales)
+print("Alto:", img.shape[0])     # Representa el alto (número de filas) o la cantidad de píxeles verticales.
+print("Ancho:", img.shape[1])    # Indica el ancho (número de columnas) o la cantidad de píxeles horizontales.
+print("Canales de color:", img.shape[2])
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📚 Propiedades de la Imagen</h3>
+
+                <div class="glosario-item">
+                    <h4>img.shape</h4>
+                    <p>Devuelve una tupla con las dimensiones de la imagen en el formato (alto, ancho, canales). Es la propiedad más importante para conocer las características básicas de una imagen.</p>
+                    <div class="method-box">
+                        <strong>Formato de salida:</strong>
+                        (altura_en_píxeles, anchura_en_píxeles, número_de_canales)
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>img.shape[0] - Alto de la imagen</h4>
+                    <p>Representa la altura de la imagen en píxeles, es decir, el número de filas de píxeles que contiene la imagen verticalmente.</p>
+                    <div class="info-box">
+                        <strong>Ejemplo:</strong>
+                        Si img.shape[0] = 480, significa que la imagen tiene 480 píxeles de altura
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>img.shape[1] - Ancho de la imagen</h4>
+                    <p>Indica la anchura de la imagen en píxeles, es decir, el número de columnas de píxeles que contiene la imagen horizontalmente.</p>
+                    <div class="info-box">
+                        <strong>Ejemplo:</strong>
+                        Si img.shape[1] = 640, significa que la imagen tiene 640 píxeles de ancho
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>img.shape[2] - Canales de color</h4>
+                    <p>Especifica el número de canales de color que tiene la imagen. Determina si es una imagen en escala de grises, color, o con transparencia.</p>
+                    <div class="method-box">
+                        <strong>Valores comunes:</strong><br>
+                        • 1 canal: Imagen en escala de grises<br>
+                        • 3 canales: Imagen a color (BGR en OpenCV)<br>
+                        • 4 canales: Imagen con transparencia (BGRA)
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>⚙️ Información Adicional de la Imagen</h3>
+
+                <div class="glosario-item">
+                    <h4>Tamaño total en píxeles</h4>
+                    <p>Puedes calcular el número total de píxeles multiplicando alto por ancho:</p>
+                    <div class="code-container">
+                        <pre>
+total_pixeles = img.shape[0] * img.shape[1]
+print(f"Total de píxeles: {total_pixeles}")
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Tamaño en memoria</h4>
+                    <p>Para conocer cuántos elementos tiene la imagen en total (incluyendo todos los canales):</p>
+                    <div class="code-container">
+                        <pre>
+tamaño_memoria = img.size
+print(f"Elementos totales: {tamaño_memoria}")
+# Equivale a: alto × ancho × canales
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Tipo de datos</h4>
+                    <p>OpenCV almacena las imágenes como arrays NumPy. Puedes verificar el tipo de datos:</p>
+                    <div class="code-container">
+                        <pre>
+print(f"Tipo de datos: {img.dtype}")
+# Normalmente será 'uint8' (enteros de 0 a 255)
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>💡 Aplicaciones Prácticas</h3>
+                
+                <div class="glosario-item">
+                    <h4>Validación de Imágenes</h4>
+                    <p>Verificar que una imagen se cargó correctamente y tiene las dimensiones esperadas:</p>
+                    <div class="code-container">
+                        <pre>
+import cv2
+
+img = cv2.imread('imagen.jpg')
+
+if img is not None:
+    print(f"Imagen cargada exitosamente")
+    print(f"Dimensiones: {img.shape}")
+    
+    # Verificar si es una imagen a color
+    if len(img.shape) == 3 and img.shape[2] == 3:
+        print("Es una imagen a color (BGR)")
+    elif len(img.shape) == 2:
+        print("Es una imagen en escala de grises")
+else:
+    print("Error: No se pudo cargar la imagen")
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Casos de Uso Comunes</h4>
+                    <ul style="margin-left: 20px; color: #4a5568; line-height: 1.8;">
+                        <li><strong>Preprocesamiento:</strong> Verificar dimensiones antes de redimensionar</li>
+                        <li><strong>Machine Learning:</strong> Validar que todas las imágenes tengan el mismo tamaño</li>
+                        <li><strong>Análisis de memoria:</strong> Calcular el espacio que ocuparán las imágenes</li>
+                        <li><strong>Conversión de formatos:</strong> Determinar si necesitas convertir canales</li>
+                        <li><strong>Debugging:</strong> Verificar que las operaciones no cambien dimensiones inesperadamente</li>
+                    </ul>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Ejemplo Completo de Análisis</h4>
+                    <div class="code-container">
+                        <pre>
+import cv2
+import os
+
+def analizar_imagen(ruta_imagen):
+    # Verificar si el archivo existe
+    if not os.path.exists(ruta_imagen):
+        print(f"Error: El archivo {ruta_imagen} no existe")
+        return
+    
+    # Cargar la imagen
+    img = cv2.imread(ruta_imagen)
+    
+    if img is None:
+        print(f"Error: No se pudo cargar {ruta_imagen}")
+        return
+    
+    # Información básica
+    print(f"=== Análisis de {ruta_imagen} ===")
+    print(f"Dimensiones: {img.shape}")
+    print(f"Alto: {img.shape[0]} píxeles")
+    print(f"Ancho: {img.shape[1]} píxeles")
+    print(f"Canales: {img.shape[2]}")
+    print(f"Total píxeles: {img.shape[0] * img.shape[1]:,}")
+    print(f"Tamaño en memoria: {img.size:,} elementos")
+    print(f"Tipo de datos: {img.dtype}")
+    
+    # Tamaño del archivo
+    tamaño_archivo = os.path.getsize(ruta_imagen)
+    print(f"Tamaño del archivo: {tamaño_archivo:,} bytes")
+
+# Usar la función
+analizar_imagen('gato.jpg')
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🎯 Consejos y Mejores Prácticas</h3>
+                
+                <div class="glosario-item">
+                    <h4>Manejo de Errores</h4>
+                    <div class="warning-box">
+                        <strong>Importante:</strong>
+                        Siempre verifica que la imagen se haya cargado correctamente antes de acceder a sus propiedades. Si cv2.imread() falla, devuelve None y acceder a .shape causará un error.
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Optimización de Memoria</h4>
+                    <div class="method-box">
+                        <strong>Recomendación:</strong>
+                        Para procesar muchas imágenes, conocer sus dimensiones te ayuda a estimar el uso de memoria y decidir si necesitas redimensionarlas antes del procesamiento.
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Compatibilidad de Formatos</h4>
+                    <div class="info-box">
+                        <strong>Nota:</strong>
+                        OpenCV puede leer la mayoría de formatos de imagen (JPG, PNG, BMP, TIFF, etc.), pero siempre carga las imágenes en formato BGR (Blue-Green-Red), no RGB.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

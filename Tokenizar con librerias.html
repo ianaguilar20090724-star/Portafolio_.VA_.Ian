@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tokenización</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .content-wrapper {
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tema-titulo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .tema-titulo h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .tema-titulo p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .section h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .code-container {
+            background: #2d3748;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .code-container pre {
+            margin: 0;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .glosario-item {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glosario-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .glosario-item h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .glosario-item p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .visual-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .demo-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            border: 2px solid #667eea;
+        }
+
+        .demo-text {
+            background: white;
+            color: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-style: italic;
+            line-height: 1.6;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .tokens-display {
+            background: #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .token {
+            background: white;
+            color: #667eea;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            border: 2px solid #667eea;
+        }
+
+        .info-box {
+            background: #e0e7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-box strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .process-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .process-step {
+            background: #e0e7ff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .process-step h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e7ff;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .tema-titulo h2 {
+                font-size: 1.5em;
+            }
+
+            .section h3 {
+                font-size: 1.5em;
+            }
+
+            .visual-demo {
+                grid-template-columns: 1fr;
+            }
+
+            .process-flow {
+                flex-direction: column;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al Catálogo</a>
+        
+        <div class="header">
+            <h1>Realizado por: Ian Martin Aguilar Alejo</h1>
+            <p>Especialidad de IA del CBTIS 144</p>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="tema-titulo">
+                <h2>Tokenización de Texto</h2>
+                <p>Descomposición de texto en componentes significativos</p>
+            </div>
+
+            <div class="section">
+                <h3>📖 ¿Qué es la Tokenización?</h3>
+                <p style="color: #4a5568; line-height: 1.8; margin-bottom: 15px;">
+                    La tokenización es el proceso de dividir un texto en unidades más pequeñas llamadas <strong>tokens</strong>. 
+                    Estos tokens pueden ser palabras individuales, oraciones, caracteres o símbolos. Es un paso fundamental 
+                    en el Procesamiento del Lenguaje Natural (NLP).
+                </p>
+            </div>
+
+            <div class="section">
+                <h3>🔄 Proceso de Tokenización</h3>
+                <div class="process-flow">
+                    <div class="process-step">
+                        <h5>1️⃣ Texto Original</h5>
+                        <p style="font-size: 0.9em; color: #4a5568;">Convertir a minúsculas</p>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="process-step">
+                        <h5>2️⃣ Limpieza</h5>
+                        <p style="font-size: 0.9em; color: #4a5568;">Eliminar caracteres especiales</p>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="process-step">
+                        <h5>3️⃣ Tokenización</h5>
+                        <p style="font-size: 0.9em; color: #4a5568;">Dividir en tokens</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📝 Código del Ejemplo</h3>
+                <div class="code-container">
+                    <pre>
+import nltk
+import re
+
+# Descargar modelo de tokenización
+from nltk.tokenize import word_tokenize, sent_tokenize
+
+# Texto a tokenizar
+txt = ("En la materia de lenguaje natural y vision artificial, se desarrolla,"
+       "un portafolio de prácticas como material de apoyo para los siguientes"
+       "semestres de la especialidad, incluyendio practicas y glosario de funciones"
+       "por cada practica")
+
+# PASO 1: Limpiar el texto
+texto_limpio = txt.lower()
+
+# Quitar saltos de línea y espacios
+texto_limpio = texto_limpio.strip()
+
+# Eliminar caracteres especiales (mantener solo letras, números y espacios)
+texto_limpio = re.sub(r'[^a-záéíóúüñ\s]', '', texto_limpio)
+
+# PASO 2: Tokenizar por palabras
+palabras = word_tokenize(texto_limpio, language="spanish")
+print("Tokens en palabras:", palabras)
+
+# PASO 3: Tokenizar por oraciones
+oraciones = sent_tokenize(txt)
+print("Tokens en oraciones:", oraciones)
+
+# Mostrar resultados
+print("Texto original:", txt)
+print("Texto limpio:", texto_limpio)
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📚 Funciones Principales</h3>
+
+                <div class="glosario-item">
+                    <h4>word_tokenize(texto, language="spanish")</h4>
+                    <p>Divide un texto en palabras individuales. Es sensible al idioma para un mejor procesamiento.</p>
+                    <div class="info-box">
+                        <strong>Parámetros:</strong><br>
+                        • <code>texto</code> - Texto a tokenizar<br>
+                        • <code>language</code> - Idioma ("spanish", "english", etc.)
+                    </div>
+                    <div class="code-container" style="margin-top: 10px;">
+                        <pre>palabras = word_tokenize("Hola mundo", language="spanish")
+# Resultado: ['Hola', 'mundo']</pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>sent_tokenize(texto)</h4>
+                    <p>Divide un texto en oraciones. Reconoce puntos, signos de exclamación e interrogación.</p>
+                    <div class="code-container" style="margin-top: 10px;">
+                        <pre>oraciones = sent_tokenize("Hola mundo. ¿Cómo estás?")
+# Resultado: ['Hola mundo.', '¿Cómo estás?']</pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>re.sub(patrón, reemplazo, texto)</h4>
+                    <p>Función de la librería <code>re</code> (expresiones regulares) que busca y reemplaza patrones en texto.</p>
+                    <div class="info-box">
+                        <strong>Parámetros:</strong><br>
+                        • <code>patrón</code> - Patrón regex a buscar<br>
+                        • <code>reemplazo</code> - Texto de reemplazo<br>
+                        • <code>texto</code> - Texto donde buscar
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>str.lower()</h4>
+                    <p>Convierte todo el texto a minúsculas. Paso importante para normalizar el texto.</p>
+                    <div class="code-container" style="margin-top: 10px;">
+                        <pre>texto = "HOLA Mundo".lower()
+# Resultado: "hola mundo"</pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>str.strip()</h4>
+                    <p>Elimina espacios en blanco al inicio y final del texto, incluyendo saltos de línea.</p>
+                    <div class="code-container" style="margin-top: 10px;">
+                        <pre>texto = "  hola mundo  \n".strip()
+# Resultado: "hola mundo"</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🧹 Limpiar Texto - Expresiones Regulares</h3>
+
+                <div class="glosario-item">
+                    <h4>Patrón: r'[^a-záéíóúüñ\s]'</h4>
+                    <p>Patrón regex que elimina todo excepto letras (incluyendo acentos), ñ y espacios.</p>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Símbolo</th>
+                            <th>Significado</th>
+                        </tr>
+                        <tr>
+                            <td><code>^</code></td>
+                            <td>Negación (NO)</td>
+                        </tr>
+                        <tr>
+                            <td><code>a-z</code></td>
+                            <td>Letras minúsculas</td>
+                        </tr>
+                        <tr>
+                            <td><code>áéíóúüñ</code></td>
+                            <td>Caracteres acentuados</td>
+                        </tr>
+                        <tr>
+                            <td><code>\s</code></td>
+                            <td>Espacios en blanco</td>
+                        </tr>
+                        <tr>
+                            <td><code>[ ]</code></td>
+                            <td>Conjunto de caracteres</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Otros Patrones Útiles</h4>
+                    <div class="code-container">
+                        <pre>
+# Eliminar números
+texto = re.sub(r'\d', '', texto)
+
+# Eliminar puntuación
+texto = re.sub(r'[.,!?;:]', '', texto)
+
+# Eliminar espacios múltiples
+texto = re.sub(r'\s+', ' ', texto)
+
+# Eliminar URLs
+texto = re.sub(r'http\S+', '', texto)
+
+# Mantener solo alfanuméricos
+texto = re.sub(r'\W', ' ', texto)
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📊 Ejemplo de Salida</h3>
+                <div class="visual-demo">
+                    <div class="demo-box">
+                        <h4>Texto Original</h4>
+                        <div class="demo-text">
+                            En la materia de lenguaje natural y vision artificial, se desarrolla, un portafolio...
+                        </div>
+                        <p style="font-size: 0.9em;">Con caracteres especiales</p>
+                    </div>
+                    <div class="demo-box">
+                        <h4>Texto Limpio</h4>
+                        <div class="demo-text">
+                            en la materia de lenguaje natural y vision artificial se desarrolla un portafolio...
+                        </div>
+                        <p style="font-size: 0.9em;">Sin caracteres especiales</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🎯 Tipos de Tokenización</h3>
+
+                <div class="glosario-item">
+                    <h4>Tokenización por Palabras</h4>
+                    <p>Divide el texto en palabras individuales. Es la más común.</p>
+                    <div class="code-container">
+                        <pre>
+texto = "Hola mundo"
+tokens = word_tokenize(texto, language="spanish")
+# Resultado: ['Hola', 'mundo']
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Tokenización por Oraciones</h4>
+                    <p>Divide el texto en oraciones completas.</p>
+                    <div class="code-container">
+                        <pre>
+texto = "Hola mundo. ¿Cómo estás?"
+tokens = sent_tokenize(texto)
+# Resultado: ['Hola mundo.', '¿Cómo estás?']
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Tokenización por Caracteres</h4>
+                    <p>Divide el texto en caracteres individuales.</p>
+                    <div class="code-container">
+                        <pre>
+texto = "Hola"
+tokens = list(texto)
+# Resultado: ['H', 'o', 'l', 'a']
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>💡 Aplicaciones Prácticas</h3>
+
+                <div class="glosario-item">
+                    <h4>Casos de Uso en NLP</h4>
+                    <ul style="margin-left: 20px; color: #4a5568; line-height: 1.8;">
+                        <li><strong>📝 Análisis de Sentimientos:</strong> Tokenizar tweets o reseñas para análisis</li>
+                        <li><strong>🤖 Clasificación de Textos:</strong> Preparar datos para modelos de ML</li>
+                        <li><strong>🔍 Búsqueda y Filtrado:</strong> Indexar documentos por palabras clave</li>
+                        <li><strong>🌐 Traducción Automática:</strong> Procesar texto antes de traducir</li>
+                        <li><strong>🎤 Reconocimiento de Voz:</strong> Procesar transcripciones</li>
+                        <li><strong>💬 Chatbots:</strong> Entender preguntas del usuario</li>
+                        <li><strong>📚 Análisis de Frecuencia:</strong> Contar palabras y términos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>⚙️ Instalación de NLTK</h3>
+                <div class="code-container">
+                    <pre>
+# Instalar NLTK
+pip install nltk
+
+# En Python, descargar modelos necesarios
+import nltk
+nltk.download('punkt')  # Para tokenización
+nltk.download('universal_tagset')  # Información adicional
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>⚠️ Consideraciones Importantes</h3>
+
+                <div class="glosario-item">
+                    <h4>Idioma es Importante</h4>
+                    <p>Especificar el idioma correcto es crucial para obtener resultados precisos. El español tiene reglas diferentes al inglés.</p>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Limpieza Previa</h4>
+                    <p>Siempre limpia el texto antes de tokenizar. Esto mejora la calidad de los tokens y reduce ruido.</p>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Expresiones Regulares</h4>
+                    <p>Las regex son poderosas pero complejas. Prueba tus patrones antes de aplicarlos a grandes volúmenes de texto.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

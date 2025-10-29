@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traducción de Texto</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content-wrapper {
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tema-titulo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .tema-titulo h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .tema-titulo p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .section h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .code-container {
+            background: #2d3748;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .code-container pre {
+            margin: 0;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .code-container code {
+            display: block;
+        }
+
+        .keyword { color: #ff79c6; }
+        .function { color: #50fa7b; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .number { color: #bd93f9; }
+
+        .glosario-item {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glosario-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .glosario-item h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .glosario-item p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .parametros {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .parametros strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .parametros code {
+            background: #2d3748;
+            color: #50fa7b;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .tema-titulo h2 {
+                font-size: 1.5em;
+            }
+
+            .section h3 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Realizado por: Ian Martin Aguilar Alejo</h1>
+            <p>Lenguaje Natural con Python</p>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="tema-titulo">
+                <h2>Traducción de Texto con Python</h2>
+                <p>Traducir texto automáticamente a múltiples idiomas usando deep_translator</p>
+            </div>
+
+            <div class="section">
+                <h3>📝 Código del Ejemplo</h3>
+                <div class="code-container">
+                    <pre><code><span class="keyword">from</span> deep_translator <span class="keyword">import</span> GoogleTranslator
+
+
+<span class="keyword">def</span> <span class="function">translate_text</span>(text, target_languages):
+    translations = {}
+    <span class="keyword">for</span> lang <span class="keyword">in</span> target_languages:
+        <span class="keyword">try</span>:
+            translated = <span class="function">GoogleTranslator</span>(source=<span class="string">'es'</span>, target=lang).<span class="function">translate</span>(text)
+            translations[lang] = translated
+        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+            translations[lang] = <span class="string">f"Error al traducir a {lang}: {e}"</span>
+    <span class="keyword">return</span> translations
+
+
+<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
+    input_text = <span class="function">input</span>(<span class="string">"Introduce el texto en español a traducir: "</span>)
+
+    <span class="comment"># Idiomas objetivo (códigos ISO 639-1)</span>
+    <span class="comment"># 'en' para inglés, 'fr' para francés, 'de' para alemán</span>
+    target_langs = [<span class="string">'en'</span>, <span class="string">'fr'</span>, <span class="string">'de'</span>]
+
+    <span class="function">print</span>(<span class="string">f"\nTexto original (español): {input_text}"</span>)
+
+    results = <span class="function">translate_text</span>(input_text, target_langs)
+
+    <span class="keyword">for</span> lang, translated_text <span class="keyword">in</span> results.<span class="function">items</span>():
+        <span class="function">print</span>(<span class="string">f"Traducción ({lang}): {translated_text}"</span>)</code></pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📚 Glosario de Funciones y Conceptos</h3>
+
+                <div class="glosario-item">
+                    <h4>deep_translator</h4>
+                    <p>Biblioteca de Python que proporciona una interfaz unificada para múltiples servicios de traducción automática. Permite traducir texto entre diferentes idiomas de manera sencilla y eficiente sin necesidad de configurar APIs complejas.</p>
+                    <div class="parametros">
+                        <strong>Instalación:</strong>
+                        <p><code>pip install deep-translator</code></p>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>GoogleTranslator</h4>
+                    <p>Clase de deep_translator que utiliza el servicio de Google Translate para realizar traducciones. Se inicializa especificando el idioma de origen (source) y el idioma de destino (target).</p>
+                    <div class="parametros">
+                        <strong>Parámetros:</strong>
+                        <p><code>source</code> - Código del idioma de origen (ej: 'es' para español)</p>
+                        <p><code>target</code> - Código del idioma de destino (ej: 'en' para inglés)</p>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>translate()</h4>
+                    <p>Método que realiza la traducción del texto proporcionado. Recibe una cadena de texto en el idioma de origen y devuelve la traducción en el idioma de destino.</p>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Códigos ISO 639-1</h4>
+                    <p>Estándar internacional de códigos de dos letras para representar idiomas. Son utilizados por los servicios de traducción para identificar los idiomas de manera uniforme.</p>
+                    <div class="parametros">
+                        <strong>Ejemplos comunes:</strong>
+                        <p><code>es</code> - Español</p>
+                        <p><code>en</code> - Inglés</p>
+                        <p><code>fr</code> - Francés</p>
+                        <p><code>de</code> - Alemán</p>
+                        <p><code>it</code> - Italiano</p>
+                        <p><code>pt</code> - Portugués</p>
+                        <p><code>ja</code> - Japonés</p>
+                        <p><code>zh</code> - Chino</p>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Funciones definidas (def)</h4>
+                    <p>Bloque de código reutilizable que realiza una tarea específica. En este caso, <code>translate_text</code> es una función que recibe un texto y una lista de idiomas, y devuelve un diccionario con las traducciones.</p>
+                    <div class="parametros">
+                        <strong>Parámetros de translate_text:</strong>
+                        <p><code>text</code> - El texto a traducir</p>
+                        <p><code>target_languages</code> - Lista de códigos de idiomas destino</p>
+                        <p><code>return</code> - Diccionario con traducciones {idioma: texto_traducido}</p>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>try/except</h4>
+                    <p>Estructura de manejo de excepciones que permite capturar y gestionar errores durante la ejecución del código. Si ocurre un error al traducir a un idioma específico, el programa no se detiene, sino que registra el error y continúa con los demás idiomas.</p>
+                    <div class="parametros">
+                        <strong>Uso:</strong>
+                        <p><code>try:</code> - Bloque de código que puede generar errores</p>
+                        <p><code>except Exception as e:</code> - Captura cualquier error y lo almacena en la variable e</p>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>items()</h4>
+                    <p>Método de diccionarios que devuelve una vista de pares clave-valor. Permite iterar simultáneamente sobre las claves (idiomas) y valores (traducciones) del diccionario.</p>
+                    <div class="parametros">
+                        <strong>Ejemplo:</strong>
+                        <p><code>for lang, translated_text in results.items():</code></p>
+                        <p>Itera sobre cada idioma y su traducción correspondiente</p>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>if __name__ == "__main__":</h4>
+                    <p>Condicional especial que verifica si el script se está ejecutando directamente (no siendo importado como módulo). El código dentro de este bloque solo se ejecuta cuando el archivo se ejecuta directamente.</p>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>f-strings</h4>
+                    <p>Formato de cadenas en Python que permite insertar expresiones dentro de cadenas de texto usando llaves {}. Se identifican por la letra 'f' antes de las comillas.</p>
+                    <div class="parametros">
+                        <strong>Ejemplo:</strong>
+                        <p><code>f"Texto original (español): {input_text}"</code></p>
+                        <p>Inserta el valor de input_text dentro de la cadena</p>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Traducción automática</h4>
+                    <p>Proceso de convertir texto de un idioma a otro utilizando algoritmos de inteligencia artificial y procesamiento de lenguaje natural. Los servicios modernos como Google Translate utilizan redes neuronales para producir traducciones cada vez más precisas y naturales.</p>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Aplicaciones prácticas</h4>
+                    <p>Este tipo de código es fundamental para múltiples aplicaciones del mundo real:</p>
+                    <div class="parametros">
+                        <strong>Usos comunes:</strong>
+                        <p>• Sitios web multilingües</p>
+                        <p>• Aplicaciones de mensajería internacional</p>
+                        <p>• Traducción de documentos</p>
+                        <p>• Chatbots que atienden en múltiples idiomas</p>
+                        <p>• Análisis de contenido en redes sociales globales</p>
+                        <p>• Herramientas de aprendizaje de idiomas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

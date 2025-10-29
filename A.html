@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajustar Tamaño</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .content-wrapper {
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tema-titulo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .tema-titulo h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .tema-titulo p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .section h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .code-container {
+            background: #2d3748;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .code-container pre {
+            margin: 0;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .glosario-item {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glosario-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .glosario-item h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .glosario-item p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .warning-box strong {
+            color: #d97706;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .method-box {
+            background: #dbeafe;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .method-box strong {
+            color: #2563eb;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .tema-titulo h2 {
+                font-size: 1.5em;
+            }
+
+            .section h3 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al Catálogo</a>
+        
+        <div class="header">
+            <h1>Realizado por: Ian Martin Aguilar Alejo</h1>
+            <p>Especialidad de IA del CBTIS 144</p>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="tema-titulo">
+                <h2>Redimensionamiento de Imágenes</h2>
+                <p>Ajuste de tamaño con OpenCV</p>
+            </div>
+
+            <div class="section">
+                <h3>📝 Código del Ejemplo</h3>
+                <div class="code-container">
+                    <pre>
+import cv2
+
+# Cargar la imagen
+I = cv2.imread('Cinnanmonrol.png')
+
+# Método 1: Redimensionar a tamaño específico
+I_resize = cv2.resize(I, (500, 400))
+
+# Método 2: Redimensionar con factor de escala
+I_scale = cv2.resize(I, None, fx=0.5, fy=0.5)
+
+# Método 3: Con interpolación específica
+I_inter = cv2.resize(I, (500, 400), 
+                     interpolation=cv2.INTER_LINEAR)
+
+# Mostrar imagen original
+print(f"Tamaño original: {I.shape}")
+cv2.imshow("Original", I)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+# Mostrar imagen redimensionada
+print(f"Tamaño nuevo: {I_resize.shape}")
+cv2.imshow("Redimensionada", I_resize)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+# Guardar la imagen redimensionada
+cv2.imwrite("imagen_redimensionada.png", I_resize)
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📚 Función cv2.resize()</h3>
+
+                <div class="glosario-item">
+                    <h4>cv2.resize(imagen, (ancho, alto))</h4>
+                    <p>Redimensiona una imagen a las dimensiones especificadas. Es la forma más directa de cambiar el tamaño.</p>
+                    <div class="method-box">
+                        <strong>Sintaxis básica:</strong>
+                        imagen_nueva = cv2.resize(imagen_original, (500, 400))
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>cv2.resize(imagen, None, fx=factor_x, fy=factor_y)</h4>
+                    <p>Redimensiona usando factores de escala en lugar de dimensiones absolutas. Útil para mantener proporciones.</p>
+                    <div class="method-box">
+                        <strong>Ejemplo:</strong>
+                        fx=0.5, fy=0.5 → Reduce la imagen al 50% de su tamaño<br>
+                        fx=2.0, fy=2.0 → Duplica el tamaño de la imagen
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Parámetro: interpolation</h4>
+                    <p>Especifica el método de interpolación usado para redimensionar. Afecta la calidad y velocidad del proceso.</p>
+                    <div class="method-box">
+                        <strong>Métodos disponibles:</strong><br>
+                        • <code>INTER_LINEAR</code>: Interpolación bilineal (por defecto, buena calidad)<br>
+                        • <code>INTER_NEAREST</code>: Vecino más cercano (más rápido, menor calidad)<br>
+                        • <code>INTER_CUBIC</code>: Interpolación bicúbica (mejor calidad, más lento)<br>
+                        • <code>INTER_AREA</code>: Ideal para reducir tamaño
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>⚙️ Métodos de Interpolación Detallados</h3>
+
+                <div class="glosario-item">
+                    <h4>cv2.INTER_LINEAR</h4>
+                    <p>Interpolación bilineal. Balancea velocidad y calidad. Es el método por defecto y funciona bien para la mayoría de casos.</p>
+                    <div class="warning-box">
+                        <strong>Cuándo usar:</strong>
+                        Para redimensionamientos generales donde necesitas buen equilibrio entre velocidad y calidad.
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>cv2.INTER_NEAREST</h4>
+                    <p>Interpolación por vecino más cercano. El método más rápido pero con menor calidad, puede producir imágenes pixeladas.</p>
+                    <div class="warning-box">
+                        <strong>Cuándo usar:</strong>
+                        Cuando la velocidad es crítica o trabajas con imágenes binarias/máscaras.
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>cv2.INTER_CUBIC</h4>
+                    <p>Interpolación bicúbica sobre vecindario 4x4. Produce resultados más suaves y de mejor calidad, pero es más lento.</p>
+                    <div class="warning-box">
+                        <strong>Cuándo usar:</strong>
+                        Para agrandar imágenes donde la calidad es prioritaria.
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>cv2.INTER_AREA</h4>
+                    <p>Remuestreo usando relación de área de píxeles. Método preferido para reducir el tamaño de imágenes.</p>
+                    <div class="warning-box">
+                        <strong>Cuándo usar:</strong>
+                        Específicamente para reducir tamaños, produce mejores resultados sin aliasing.
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>💡 Aplicaciones y Consejos</h3>
+                
+                <div class="glosario-item">
+                    <h4>Mantener la Proporción</h4>
+                    <p>Para evitar distorsión, calcula las nuevas dimensiones manteniendo el aspect ratio:</p>
+                    <div class="code-container">
+                        <pre>
+# Calcular nuevo tamaño manteniendo proporción
+ancho_original = I.shape[1]
+alto_original = I.shape[0]
+nuevo_ancho = 500
+
+# Calcular alto proporcional
+ratio = nuevo_ancho / ancho_original
+nuevo_alto = int(alto_original * ratio)
+
+I_proporcional = cv2.resize(I, (nuevo_ancho, nuevo_alto))
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Casos de Uso Comunes</h4>
+                    <ul style="margin-left: 20px; color: #4a5568; line-height: 1.8;">
+                        <li><strong>Machine Learning:</strong> Normalizar tamaños de entrada para redes neuronales</li>
+                        <li><strong>Procesamiento en lote:</strong> Reducir imágenes para acelerar operaciones</li>
+                        <li><strong>Web y móvil:</strong> Optimizar imágenes para diferentes dispositivos</li>
+                        <li><strong>Miniaturas:</strong> Crear thumbnails para galerías</li>
+                        <li><strong>Análisis:</strong> Reducir resolución para procesamiento más rápido</li>
+                    </ul>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Recomendaciones de Rendimiento</h4>
+                    <div class="method-box">
+                        <strong>Optimización:</strong><br>
+                        • Para agrandar: usa INTER_CUBIC o INTER_LINEAR<br>
+                        • Para reducir: usa INTER_AREA<br>
+                        • Para velocidad máxima: usa INTER_NEAREST<br>
+                        • Para calidad máxima: usa INTER_CUBIC
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🎯 Ejemplo Completo con Diferentes Métodos</h3>
+                <div class="code-container">
+                    <pre>
+import cv2
+
+# Cargar imagen
+img = cv2.imread('imagen.jpg')
+print(f"Tamaño original: {img.shape}")
+
+# Reducir con INTER_AREA (mejor para reducir)
+img_small = cv2.resize(img, (200, 150), 
+                       interpolation=cv2.INTER_AREA)
+cv2.imwrite("reducida_area.jpg", img_small)
+
+# Agrandar con INTER_CUBIC (mejor para agrandar)
+img_large = cv2.resize(img, (1000, 750), 
+                       interpolation=cv2.INTER_CUBIC)
+cv2.imwrite("ampliada_cubic.jpg", img_large)
+
+# Escalar al 50% con factores
+img_half = cv2.resize(img, None, fx=0.5, fy=0.5,
+                      interpolation=cv2.INTER_LINEAR)
+cv2.imwrite("mitad.jpg", img_half)
+
+print("Procesamiento completado!")
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

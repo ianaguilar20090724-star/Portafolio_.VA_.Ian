@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movimiento de Imágenes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .content-wrapper {
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tema-titulo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .tema-titulo h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .tema-titulo p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .section h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .code-container {
+            background: #2d3748;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .code-container pre {
+            margin: 0;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .glosario-item {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glosario-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .glosario-item h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .glosario-item p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .rotation-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .rotation-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #667eea;
+        }
+
+        .rotation-visual {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: white;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .rotation-visual::after {
+            content: '↑';
+            position: absolute;
+            top: 5px;
+            font-size: 1.5em;
+        }
+
+        .rotate-90-ccw {
+            transform: rotate(-90deg);
+        }
+
+        .rotate-90-cw {
+            transform: rotate(90deg);
+        }
+
+        .rotate-180 {
+            transform: rotate(180deg);
+        }
+
+        .rotation-box h5 {
+            color: white;
+            margin-top: 10px;
+        }
+
+        .keyboard-guide {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .key-item {
+            background: #2d3748;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            border: 2px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .key-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .key-item code {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1.5em;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .key-item p {
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .info-box {
+            background: #e0e7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-box strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .warning-box strong {
+            color: #d97706;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .tema-titulo h2 {
+                font-size: 1.5em;
+            }
+
+            .section h3 {
+                font-size: 1.5em;
+            }
+
+            .rotation-demo {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al Catálogo</a>
+        
+        <div class="header">
+            <h1>Realizado por: Ian Martin Aguilar Alejo</h1>
+            <p>Especialidad de IA del CBTIS 144</p>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="tema-titulo">
+                <h2>Rotación de Imágenes</h2>
+                <p>Control interactivo de orientación de imágenes</p>
+            </div>
+
+            <div class="section">
+                <h3>🔄 Visualización de Rotaciones</h3>
+                <div class="rotation-demo">
+                    <div class="rotation-box">
+                        <div class="rotation-visual">📷</div>
+                        <h5>Original (0°)</h5>
+                    </div>
+                    <div class="rotation-box">
+                        <div class="rotation-visual rotate-90-ccw">📷</div>
+                        <h5>90° Antihorario</h5>
+                    </div>
+                    <div class="rotation-box">
+                        <div class="rotation-visual rotate-90-cw">📷</div>
+                        <h5>90° Horario</h5>
+                    </div>
+                    <div class="rotation-box">
+                        <div class="rotation-visual rotate-180">📷</div>
+                        <h5>180°</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📝 Código del Ejemplo</h3>
+                <div class="code-container">
+                    <pre>
+import cv2
+
+# Cargar la imagen
+img = cv2.imread("JEW.jfif")
+
+# Crear una copia de la imagen original
+o = img.copy()
+
+# Bucle interactivo
+while True:
+    cv2.imshow("Jew", img)
+    t = cv2.waitKey(0)  # Esperar acción del usuario
+    
+    if t == ord("a"):
+        # Rotar 90° en sentido antihorario
+        img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        print("Se presionó la tecla:", t)
+        
+    elif t == ord("d"):
+        # Rotar 90° en sentido horario
+        img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
+        print("Se presionó la tecla:", t)
+        
+    elif t == ord("w"):
+        # Rotar 180°
+        img = cv2.rotate(img, cv2.ROTATE_180)
+        print("Se presionó la tecla:", t)
+        
+    elif t == ord("s"):
+        # Salir del programa
+        print("Se presionó la tecla:", t)
+        break
+
+cv2.destroyAllWindows()
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🎮 Guía de Controles</h3>
+                <div class="keyboard-guide">
+                    <div class="key-item">
+                        <code>A</code>
+                        <p>⟲ Rotar 90°</p>
+                        <p>Antihorario</p>
+                    </div>
+                    <div class="key-item">
+                        <code>D</code>
+                        <p>⟳ Rotar 90°</p>
+                        <p>Horario</p>
+                    </div>
+                    <div class="key-item">
+                        <code>W</code>
+                        <p>↻ Rotar 180°</p>
+                        <p>Media vuelta</p>
+                    </div>
+                    <div class="key-item">
+                        <code>S</code>
+                        <p>❌ Salir</p>
+                        <p>Cerrar programa</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📚 Funciones Principales</h3>
+
+                <div class="glosario-item">
+                    <h4>cv2.rotate(imagen, código_rotación)</h4>
+                    <p>Rota una imagen según el código de rotación especificado. Es la forma más eficiente y precisa de rotar imágenes en OpenCV.</p>
+                    <div class="info-box">
+                        <strong>Sintaxis:</strong><br>
+                        <code>imagen_rotada = cv2.rotate(imagen_original, código)</code>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>cv2.ROTATE_90_COUNTERCLOCKWISE</h4>
+                    <p>Constante que rota la imagen 90 grados en sentido antihorario (izquierda). Es como girar la imagen hacia la izquierda.</p>
+                    <div class="info-box">
+                        <strong>Aplicación:</strong><br>
+                        Útil para imágenes tomadas en orientación horizontal que necesitan estar verticales.
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>cv2.ROTATE_90_CLOCKWISE</h4>
+                    <p>Constante que rota la imagen 90 grados en sentido horario (derecha). Es como girar la imagen hacia la derecha.</p>
+                    <div class="info-box">
+                        <strong>Aplicación:</strong><br>
+                        Común para corregir imágenes de móviles en orientación incorrecta.
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>cv2.ROTATE_180</h4>
+                    <p>Constante que rota la imagen 180 grados. Invierte completamente la imagen, como voltearla de cabeza.</p>
+                    <div class="info-box">
+                        <strong>Aplicación:</strong><br>
+                        Para corregir imágenes escaneadas o capturadas al revés.
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>imagen.copy()</h4>
+                    <p>Crea una copia independiente de la imagen. Cambios en la copia no afectan el original.</p>
+                    <div class="warning-box">
+                        <strong>Importante:</strong><br>
+                        Sin <code>.copy()</code>, solo creas una referencia. Modificaciones afectarían ambas variables.
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🔄 Comparación de Métodos de Rotación</h3>
+
+                <div class="glosario-item">
+                    <h4>cv2.rotate() vs cv2.getRotationMatrix2D()</h4>
+                    <p>Existen dos formas principales de rotar imágenes en OpenCV:</p>
+                    
+                    <div style="margin-top: 15px;">
+                        <strong style="color: #667eea;">Método 1: cv2.rotate() (Recomendado)</strong>
+                        <div class="code-container" style="margin-top: 10px;">
+                            <pre>
+# Simple y directo
+img_rotada = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
+                            </pre>
+                        </div>
+                        <ul style="margin: 10px 0 10px 20px; color: #4a5568; line-height: 1.8;">
+                            <li>✅ Más simple y directo</li>
+                            <li>✅ Solo para rotaciones de 90° y 180°</li>
+                            <li>✅ Más rápido para estos ángulos</li>
+                            <li>✅ No pierde calidad</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <strong style="color: #667eea;">Método 2: getRotationMatrix2D()</strong>
+                        <div class="code-container" style="margin-top: 10px;">
+                            <pre>
+# Más flexible pero complejo
+centro = (img.shape[1]//2, img.shape[0]//2)
+matriz = cv2.getRotationMatrix2D(centro, 45, 1.0)
+img_rotada = cv2.warpAffine(img, matriz, (img.shape[1], img.shape[0]))
+                            </pre>
+                        </div>
+                        <ul style="margin: 10px 0 10px 20px; color: #4a5568; line-height: 1.8;">
+                            <li>✅ Permite cualquier ángulo (ej: 45°, 30°)</li>
+                            <li>✅ Permite escalar mientras rota</li>
+                            <li>✅ Mayor control sobre el centro de rotación</li>
+                            <li>⚠️ Más complejo de implementar</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🎯 Ejemplo con getRotationMatrix2D</h3>
+                <div class="code-container">
+                    <pre>
+import cv2
+
+img = cv2.imread("imagen.jpg")
+
+# Obtener dimensiones
+(h, w) = img.shape[:2]
+
+# Calcular el centro de la imagen
+centro = (w // 2, h // 2)
+
+# Crear matriz de rotación
+# Parámetros: (centro, ángulo, escala)
+matriz = cv2.getRotationMatrix2D(centro, 45, 1.0)
+
+# Aplicar la rotación
+img_rotada = cv2.warpAffine(img, matriz, (w, h))
+
+# Mostrar resultado
+cv2.imshow("Rotación 45°", img_rotada)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>💡 Aplicaciones Prácticas</h3>
+
+                <div class="glosario-item">
+                    <h4>Casos de Uso Comunes</h4>
+                    <ul style="margin-left: 20px; color: #4a5568; line-height: 1.8;">
+                        <li><strong>📱 Corrección de Orientación:</strong> Arreglar fotos tomadas en horizontal/vertical</li>
+                        <li><strong>🔍 Normalización de Datos:</strong> Preparar imágenes para machine learning</li>
+                        <li><strong>📄 Procesamiento de Documentos:</strong> Corregir escaneos mal orientados</li>
+                        <li><strong>🎨 Edición de Imágenes:</strong> Herramientas de edición interactivas</li>
+                        <li><strong>🤖 Augmentación de Datos:</strong> Crear variaciones para entrenar modelos</li>
+                        <li><strong>🎯 Detección de Objetos:</strong> Rotar objetos a orientación estándar</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>⚙️ Ejemplo Completo con Reseteo</h3>
+                <div class="code-container">
+                    <pre>
+import cv2
+
+# Cargar imagen
+img = cv2.imread("JEW.jfif")
+original = img.copy()  # Guardar copia del original
+
+print("=== CONTROLES ===")
+print("A: Rotar 90° antihorario")
+print("D: Rotar 90° horario")
+print("W: Rotar 180°")
+print("R: Resetear a imagen original")
+print("S: Salir")
+
+while True:
+    cv2.imshow("Rotación Interactiva", img)
+    tecla = cv2.waitKey(0)
+    
+    if tecla == ord("a"):
+        img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        print("↺ Rotado 90° antihorario")
+        
+    elif tecla == ord("d"):
+        img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
+        print("↻ Rotado 90° horario")
+        
+    elif tecla == ord("w"):
+        img = cv2.rotate(img, cv2.ROTATE_180)
+        print("⟲ Rotado 180°")
+        
+    elif tecla == ord("r"):
+        img = original.copy()
+        print("🔄 Imagen reseteada")
+        
+    elif tecla == ord("s"):
+        print("❌ Saliendo...")
+        break
+
+cv2.destroyAllWindows()
+print("¡Programa finalizado!")
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>⚠️ Consideraciones Importantes</h3>
+
+                <div class="glosario-item">
+                    <h4>Cambio de Dimensiones</h4>
+                    <p>Al rotar 90° o 270°, las dimensiones de la imagen se intercambian (ancho ↔ alto).</p>
+                    <div class="code-container" style="margin-top: 10px;">
+                        <pre>
+print(f"Original: {img.shape}")  # (480, 640, 3)
+img_rot = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
+print(f"Rotada: {img_rot.shape}")  # (640, 480, 3)
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Rotaciones Acumulativas</h4>
+                    <p>Cada rotación se aplica sobre el resultado anterior, no sobre el original.</p>
+                    <div class="warning-box">
+                        <strong>Ejemplo:</strong><br>
+                        Si rotas 90° cuatro veces seguidas, vuelves a la orientación original (90° × 4 = 360°)
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Calidad de Imagen</h4>
+                    <p>Las rotaciones de 90°, 180° y 270° con <code>cv2.rotate()</code> no pierden calidad porque no requieren interpolación.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

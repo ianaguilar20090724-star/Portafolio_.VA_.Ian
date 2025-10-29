@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recorte de Imágenes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .content-wrapper {
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tema-titulo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .tema-titulo h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .tema-titulo p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .section h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .code-container {
+            background: #2d3748;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .code-container pre {
+            margin: 0;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .glosario-item {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glosario-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .glosario-item h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .glosario-item p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .visual-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .demo-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .demo-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 2px solid #667eea;
+        }
+
+        .crop-box {
+            width: 80%;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            margin: 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: 2px dashed white;
+        }
+
+        .info-box {
+            background: #e0e7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-box strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .keyboard-guide {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .key-item {
+            background: #2d3748;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            border: 2px solid #667eea;
+        }
+
+        .key-item code {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 1.2em;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .tema-titulo h2 {
+                font-size: 1.5em;
+            }
+
+            .section h3 {
+                font-size: 1.5em;
+            }
+
+            .visual-demo {
+                grid-template-columns: 1fr;
+            }
+
+            .keyboard-guide {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al Catálogo</a>
+        
+        <div class="header">
+            <h1>Realizado por: Ian Martin Aguilar Alejo</h1>
+            <p>Especialidad de IA del CBTIS 144</p>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="tema-titulo">
+                <h2>Recorte de Imágenes (Cropping)</h2>
+                <p>Extracción de regiones específicas de una imagen</p>
+            </div>
+
+            <div class="section">
+                <h3>🎨 Visualización del Concepto</h3>
+                <div class="visual-demo">
+                    <div class="demo-box">
+                        <h4>Imagen Original</h4>
+                        <div class="demo-image">🐱 Gato Completo</div>
+                        <p style="margin-top: 10px; font-size: 0.9em;">Imagen de 500×500 píxeles</p>
+                    </div>
+                    <div class="demo-box">
+                        <h4>Imagen Recortada</h4>
+                        <div class="crop-box">🐱 Recorte</div>
+                        <p style="margin-top: 10px; font-size: 0.9em;">Región de 200×200 píxeles</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📝 Código del Ejemplo</h3>
+                <div class="code-container">
+                    <pre>
+import cv2
+
+# Cargar la imagen
+gato = cv2.imread('kat.jpg')
+
+# Recortar la imagen [filas_inicio:filas_fin, columnas_inicio:columnas_fin]
+recorte = gato[50:250, 50:250]
+
+# Mostrar las imágenes
+cv2.imshow('gato', gato)
+cv2.imshow('recorte', recorte)
+
+# Bucle interactivo para cambiar entre vistas
+while True:
+    tecla = cv2.waitKey(0)
+    if tecla == ord('o'):           # Presiona 'o' para Original
+        cv2.imshow('gato', gato)
+    elif tecla == ord('r'):         # Presiona 'r' para Recorte
+        cv2.imshow('recorte', recorte)
+    elif tecla == ord('x'):         # Presiona 'x' para salir
+        cv2.destroyAllWindows()
+        break
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🎮 Guía de Controles Interactivos</h3>
+                <div class="keyboard-guide">
+                    <div class="key-item">
+                        <code>O</code>
+                        <p>Mostrar imagen Original</p>
+                    </div>
+                    <div class="key-item">
+                        <code>R</code>
+                        <p>Mostrar imagen Recortada</p>
+                    </div>
+                    <div class="key-item">
+                        <code>X</code>
+                        <p>Cerrar ventanas y Salir</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📚 Sintaxis del Recorte</h3>
+
+                <div class="glosario-item">
+                    <h4>imagen[y1:y2, x1:x2]</h4>
+                    <p>Recorta una región rectangular de la imagen usando indexación de arreglos NumPy. Es la forma más eficiente de extraer regiones.</p>
+                    <div class="info-box">
+                        <strong>Parámetros:</strong><br>
+                        • <code>y1</code> - Fila inicial (eje vertical)<br>
+                        • <code>y2</code> - Fila final (no incluida)<br>
+                        • <code>x1</code> - Columna inicial (eje horizontal)<br>
+                        • <code>x2</code> - Columna final (no incluida)
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Sistema de Coordenadas</h4>
+                    <p>En OpenCV, las coordenadas se miden desde la esquina superior izquierda (0,0). El primer índice es la fila (Y) y el segundo es la columna (X).</p>
+                    <div class="info-box">
+                        <strong>Ejemplo: gato[50:250, 50:250]</strong><br>
+                        • Comienza en fila 50, columna 50<br>
+                        • Termina en fila 250, columna 250<br>
+                        • Crea un cuadrado de 200×200 píxeles
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>cv2.waitKey(0)</h4>
+                    <p>Espera indefinidamente por una pulsación de tecla. Retorna el código ASCII de la tecla presionada o -1 si no se presiona nada.</p>
+                    <div class="info-box">
+                        <strong>Valores comunes:</strong><br>
+                        • <code>ord('o')</code> = 111<br>
+                        • <code>ord('r')</code> = 114<br>
+                        • <code>ord('x')</code> = 120
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>cv2.destroyAllWindows()</h4>
+                    <p>Cierra todas las ventanas abiertas por OpenCV. Es importante llamarla antes de terminar el programa.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📐 Ejemplos de Recortes</h3>
+                <div class="code-container">
+                    <pre>
+import cv2
+
+# Cargar la imagen
+img = cv2.imread('kat.jpg')
+
+# Obtener dimensiones
+alto, ancho = img.shape[:2]
+
+# Recorte básico (cuadrado)
+recorte1 = img[50:250, 50:250]
+
+# Recorte rectangular
+recorte2 = img[100:300, 50:400]
+
+# Recorte desde el inicio
+recorte3 = img[0:200, 0:200]
+
+# Recorte hacia el final
+recorte4 = img[-150:, -150:]  # Últimos 150 píxeles
+
+# Recorte con variables
+y_inicio, y_fin = 100, 300
+x_inicio, x_fin = 50, 350
+recorte5 = img[y_inicio:y_fin, x_inicio:x_fin]
+
+# Guardar los recortes
+cv2.imwrite("recorte1.png", recorte1)
+cv2.imwrite("recorte2.png", recorte2)
+
+print(f"Imagen original: {img.shape}")
+print(f"Recorte 1: {recorte1.shape}")
+print(f"Recorte 2: {recorte2.shape}")
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>💡 Aplicaciones Prácticas</h3>
+
+                <div class="glosario-item">
+                    <h4>Casos de Uso Comunes</h4>
+                    <ul style="margin-left: 20px; color: #4a5568; line-height: 1.8;">
+                        <li><strong>🎯 Detección:</strong> Extraer regiones de interés (ROI) para análisis</li>
+                        <li><strong>📦 Augmentación:</strong> Crear variaciones de imágenes para entrenar modelos</li>
+                        <li><strong>🔍 Zoom:</strong> Amplificar áreas específicas de interés</li>
+                        <li><strong>👥 Rostros:</strong> Extraer caras detectadas de una imagen completa</li>
+                        <li><strong>🏷️ OCR:</strong> Recortar regiones de texto para reconocimiento</li>
+                        <li><strong>📊 Análisis:</strong> Estudiar características en regiones específicas</li>
+                    </ul>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Ventajas del Recorte</h4>
+                    <ul style="margin-left: 20px; color: #4a5568; line-height: 1.8;">
+                        <li>✅ Reduce tamaño de datos procesados</li>
+                        <li>✅ Elimina información irrelevante del fondo</li>
+                        <li>✅ Acelera procesamiento posterior</li>
+                        <li>✅ Mejora precisión en tareas específicas</li>
+                        <li>✅ No requiere copia de datos (referencia en memoria)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>⚙️ Recorte Dinámico Avanzado</h3>
+                <div class="code-container">
+                    <pre>
+import cv2
+
+def recortar_centro(imagen, ancho_recorte, alto_recorte):
+    """Recorta el centro de una imagen"""
+    alto, ancho = imagen.shape[:2]
+    
+    # Calcular inicio
+    x_inicio = (ancho - ancho_recorte) // 2
+    y_inicio = (alto - alto_recorte) // 2
+    
+    # Calcular fin
+    x_fin = x_inicio + ancho_recorte
+    y_fin = y_inicio + alto_recorte
+    
+    return imagen[y_inicio:y_fin, x_inicio:x_fin]
+
+# Usar la función
+img = cv2.imread('kat.jpg')
+recorte_centro = recortar_centro(img, 200, 200)
+
+cv2.imshow("Recorte del Centro", recorte_centro)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>⚠️ Consideraciones Importantes</h3>
+
+                <div class="glosario-item">
+                    <h4>Índices Fuera de Rango</h4>
+                    <p>Es importante verificar que los índices no superen las dimensiones de la imagen para evitar errores.</p>
+                    <div class="code-container">
+                        <pre>
+# Verificar antes de recortar
+if y2 > img.shape[0] or x2 > img.shape[1]:
+    print("Índices fuera de rango")
+else:
+    recorte = img[y1:y2, x1:x2]
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Recorte No Copia la Imagen</h4>
+                    <p>Por defecto, el recorte en NumPy crea una vista, no una copia. Modificaciones al recorte afectarán la imagen original. Usa <code>.copy()</code> si necesitas independencia.</p>
+                    <div class="code-container">
+                        <pre>
+# Esto afecta la imagen original
+recorte = img[50:250, 50:250]
+recorte[0,0] = (255, 0, 0)  # Modifica img también
+
+# Esto NO afecta la imagen original
+recorte = img[50:250, 50:250].copy()
+recorte[0,0] = (255, 0, 0)  # Solo modifica el recorte
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
