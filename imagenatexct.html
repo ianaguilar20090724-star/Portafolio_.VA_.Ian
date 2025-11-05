@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR con Tesseract</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .content-wrapper {
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tema-titulo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .tema-titulo h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .tema-titulo p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .section h3 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .code-container {
+            background: #2d3748;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .code-container pre {
+            margin: 0;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .glosario-item {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glosario-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .glosario-item h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .glosario-item p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .process-flow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .process-step {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #667eea;
+            color: white;
+        }
+
+        .process-step .icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .process-step .number {
+            background: #667eea;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .process-step h5 {
+            color: #60a5fa;
+            margin-bottom: 8px;
+        }
+
+        .info-box {
+            background: #e0e7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-box strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .warning-box strong {
+            color: #d97706;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .visual-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            border: 2px solid #667eea;
+        }
+
+        .comparison-box h5 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .image-preview {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .text-output {
+            background: #475569;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .languages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .lang-card {
+            background: #e0e7ff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #667eea;
+        }
+
+        .lang-card .flag {
+            font-size: 2.5em;
+            margin-bottom: 8px;
+        }
+
+        .lang-card code {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .tema-titulo h2 {
+                font-size: 1.5em;
+            }
+
+            .section h3 {
+                font-size: 1.5em;
+            }
+
+            .visual-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Volver al Catálogo</a>
+        
+        <div class="header">
+            <h1>Realizado por: Ian Martin Aguilar Alejo</h1>
+            <p>Especialidad de IA del CBTIS 144</p>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="tema-titulo">
+                <h2>📄 OCR - Reconocimiento Óptico de Caracteres</h2>
+                <p>Extracción de texto desde imágenes con Tesseract</p>
+            </div>
+
+            <div class="section">
+                <h3>🔄 Proceso de OCR</h3>
+                <div class="process-flow">
+                    <div class="process-step">
+                        <div class="number">1</div>
+                        <div class="icon">🖼️</div>
+                        <h5>Cargar Imagen</h5>
+                        <p style="font-size: 0.9em;">imread()</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="number">2</div>
+                        <div class="icon">📏</div>
+                        <h5>Redimensionar</h5>
+                        <p style="font-size: 0.9em;">resize()</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="number">3</div>
+                        <div class="icon">⚫</div>
+                        <h5>Escala Grises</h5>
+                        <p style="font-size: 0.9em;">cvtColor()</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="number">4</div>
+                        <div class="icon">🎯</div>
+                        <h5>Binarización</h5>
+                        <p style="font-size: 0.9em;">threshold()</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="number">5</div>
+                        <div class="icon">📝</div>
+                        <h5>Extraer Texto</h5>
+                        <p style="font-size: 0.9em;">image_to_string()</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📝 Código del Ejemplo</h3>
+                <div class="code-container">
+                    <pre>
+import cv2
+import pytesseract
+
+# Configurar ruta de Tesseract
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+# 1. Cargar imagen
+imgtxt = cv2.imread('casa-memes-imagenes-2.jpg')
+
+# 2. Redimensionar la imagen a tamaño estándar
+imgfinal = cv2.resize(imgtxt, (800, 400))
+
+# 3. Convertir a escala de grises
+imggris = cv2.cvtColor(imgfinal, cv2.COLOR_BGR2GRAY)
+
+# 4. Aplicar binarización (separar fondo del texto)
+img_res = cv2.threshold(imggris, 120, 255, cv2.THRESH_BINARY)[1]
+
+# 5. Configurar OCR y extraer texto
+texto = pytesseract.image_to_string(img_res, lang="spa")
+
+# Imprimir resultado
+print("=== Texto Extraído ===")
+print(texto)
+
+# Mostrar imagen procesada
+cv2.imshow("Texto", imgfinal)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🎨 Comparación Visual</h3>
+                <div class="visual-comparison">
+                    <div class="comparison-box">
+                        <h5>Imagen Original</h5>
+                        <div class="image-preview">
+                            <div style="font-size: 4em;">🖼️</div>
+                            <p style="color: #1e293b; margin-top: 10px;">Imagen con texto embebido</p>
+                        </div>
+                    </div>
+                    <div class="comparison-box">
+                        <h5>Texto Extraído</h5>
+                        <div class="text-output">
+                            Este es el texto<br>
+                            que aparece en<br>
+                            la imagen<br>
+                            ¡Reconocido por OCR!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📚 Funciones Principales</h3>
+
+                <div class="glosario-item">
+                    <h4>pytesseract.pytesseract.tesseract_cmd</h4>
+                    <p>Establece la ruta del ejecutable de Tesseract OCR en tu sistema. Es necesario configurarlo antes de usar pytesseract.</p>
+                    <div class="info-box">
+                        <strong>Rutas comunes:</strong><br>
+                        • Windows: <code>r"C:\Program Files\Tesseract-OCR\tesseract.exe"</code><br>
+                        • Linux: <code>/usr/bin/tesseract</code><br>
+                        • macOS: <code>/usr/local/bin/tesseract</code>
+                    </div>
+                    <div class="warning-box">
+                        <strong>Importante:</strong><br>
+                        La <code>r</code> antes de la cadena indica "raw string" para evitar problemas con las barras invertidas en Windows.
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>cv2.threshold(imagen, umbral, valor_max, tipo)</h4>
+                    <p>Aplica binarización a la imagen, convirtiendo píxeles por encima del umbral a blanco y por debajo a negro. Mejora la legibilidad para OCR.</p>
+                    <div class="info-box">
+                        <strong>Parámetros:</strong><br>
+                        • <code>imagen</code> - Imagen en escala de grises<br>
+                        • <code>umbral</code> - Valor de separación (0-255)<br>
+                        • <code>valor_max</code> - Valor para píxeles por encima del umbral<br>
+                        • <code>tipo</code> - Tipo de umbralización (THRESH_BINARY)
+                    </div>
+                    <div class="code-container" style="margin-top: 10px;">
+                        <pre>
+# Sintaxis completa
+ret, img_binaria = cv2.threshold(img_gris, 120, 255, cv2.THRESH_BINARY)
+
+# ret: valor del umbral usado
+# img_binaria: imagen binarizada resultante
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>pytesseract.image_to_string(imagen, lang)</h4>
+                    <p>Función principal de OCR que extrae todo el texto de una imagen y lo retorna como string.</p>
+                    <div class="info-box">
+                        <strong>Parámetros:</strong><br>
+                        • <code>imagen</code> - Imagen procesada (preferiblemente binarizada)<br>
+                        • <code>lang</code> - Código de idioma ("spa", "eng", "fra", etc.)
+                    </div>
+                    <div class="code-container" style="margin-top: 10px;">
+                        <pre>
+# Extraer texto en español
+texto = pytesseract.image_to_string(imagen, lang="spa")
+
+# Extraer texto en inglés
+texto_en = pytesseract.image_to_string(imagen, lang="eng")
+
+# Múltiples idiomas
+texto_multi = pytesseract.image_to_string(imagen, lang="spa+eng")
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>cv2.THRESH_BINARY</h4>
+                    <p>Tipo de umbralización que convierte la imagen a blanco y negro puro. Es el más efectivo para OCR.</p>
+                    <div class="info-box">
+                        <strong>Funcionamiento:</strong><br>
+                        • Si pixel > umbral → pixel = 255 (blanco)<br>
+                        • Si pixel ≤ umbral → pixel = 0 (negro)
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🌐 Idiomas Disponibles</h3>
+                <div class="languages-grid">
+                    <div class="lang-card">
+                        <div class="flag">🇪🇸</div>
+                        <h5>Español</h5>
+                        <code>spa</code>
+                    </div>
+                    <div class="lang-card">
+                        <div class="flag">🇬🇧</div>
+                        <h5>Inglés</h5>
+                        <code>eng</code>
+                    </div>
+                    <div class="lang-card">
+                        <div class="flag">🇫🇷</div>
+                        <h5>Francés</h5>
+                        <code>fra</code>
+                    </div>
+                    <div class="lang-card">
+                        <div class="flag">🇩🇪</div>
+                        <h5>Alemán</h5>
+                        <code>deu</code>
+                    </div>
+                    <div class="lang-card">
+                        <div class="flag">🇮🇹</div>
+                        <h5>Italiano</h5>
+                        <code>ita</code>
+                    </div>
+                    <div class="lang-card">
+                        <div class="flag">🇵🇹</div>
+                        <h5>Portugués</h5>
+                        <code>por</code>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <strong>Descargar más idiomas:</strong><br>
+                    Los paquetes de idiomas se descargan desde el repositorio oficial de Tesseract y se colocan en la carpeta <code>tessdata</code> de la instalación.
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>⚙️ Instalación de Tesseract</h3>
+
+                <div class="glosario-item">
+                    <h4>Windows</h4>
+                    <div class="code-container">
+                        <pre>
+# 1. Descargar instalador desde:
+https://github.com/UB-Mannheim/tesseract/wiki
+
+# 2. Ejecutar instalador y anotar ruta de instalación
+
+# 3. Instalar pytesseract
+pip install pytesseract
+
+# 4. Configurar ruta en código
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Linux (Ubuntu/Debian)</h4>
+                    <div class="code-container">
+                        <pre>
+# Instalar Tesseract
+sudo apt update
+sudo apt install tesseract-ocr
+
+# Instalar idioma español
+sudo apt install tesseract-ocr-spa
+
+# Instalar pytesseract
+pip install pytesseract
+
+# No necesitas configurar ruta en Linux
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>macOS</h4>
+                    <div class="code-container">
+                        <pre>
+# Instalar con Homebrew
+brew install tesseract
+
+# Instalar pytesseract
+pip install pytesseract
+
+# Verificar instalación
+tesseract --version
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🎯 Mejores Prácticas para OCR</h3>
+
+                <div class="glosario-item">
+                    <h4>1. Preprocesamiento de Imagen</h4>
+                    <p>Aplicar técnicas de mejora de imagen antes del OCR aumenta la precisión significativamente.</p>
+                    <div class="code-container" style="margin-top: 10px;">
+                        <pre>
+import cv2
+import pytesseract
+
+img = cv2.imread('imagen.jpg')
+
+# Redimensionar para tamaño óptimo
+img = cv2.resize(img, None, fx=2, fy=2)
+
+# Escala de grises
+gris = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Reducir ruido
+sin_ruido = cv2.medianBlur(gris, 3)
+
+# Binarización adaptativa (mejor que umbral fijo)
+binaria = cv2.adaptiveThreshold(sin_ruido, 255, 
+                                 cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                 cv2.THRESH_BINARY, 11, 2)
+
+# OCR
+texto = pytesseract.image_to_string(binaria, lang="spa")
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>2. Configuración PSM (Page Segmentation Mode)</h4>
+                    <p>Indica a Tesseract cómo debe interpretar el layout de la página.</p>
+                    <div class="code-container" style="margin-top: 10px;">
+                        <pre>
+# Configuración PSM
+config = '--psm 6'  # Asume bloque de texto uniforme
+
+# PSM Modes más comunes:
+# 3 = Automático (por defecto)
+# 6 = Bloque uniforme de texto
+# 7 = Una sola línea de texto
+# 11 = Texto disperso
+
+texto = pytesseract.image_to_string(imagen, lang="spa", config=config)
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>3. Obtener Información Detallada</h4>
+                    <div class="code-container">
+                        <pre>
+# Obtener datos con coordenadas y confianza
+datos = pytesseract.image_to_data(imagen, lang="spa", output_type=pytesseract.Output.DICT)
+
+# Acceder a información
+for i in range(len(datos['text'])):
+    if int(datos['conf'][i]) > 60:  # Solo textos con confianza > 60%
+        texto = datos['text'][i]
+        x, y, w, h = datos['left'][i], datos['top'][i], datos['width'][i], datos['height'][i]
+        print(f"Texto: {texto}, Confianza: {datos['conf'][i]}%")
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>💡 Aplicaciones Prácticas</h3>
+
+                <div class="glosario-item">
+                    <h4>Casos de Uso Reales</h4>
+                    <ul style="margin-left: 20px; color: #4a5568; line-height: 1.8;">
+                        <li><strong>📄 Digitalización de Documentos:</strong> Convertir documentos físicos a formato digital</li>
+                        <li><strong>🎫 Escaneo de Facturas:</strong> Extraer datos de recibos y facturas automáticamente</li>
+                        <li><strong>🚗 Reconocimiento de Placas:</strong> Sistemas de control de acceso vehicular</li>
+                        <li><strong>📚 Digitalización de Libros:</strong> Crear versiones digitales de libros antiguos</li>
+                        <li><strong>✉️ Procesamiento de Correo:</strong> Automatizar clasificación de correspondencia</li>
+                        <li><strong>🏦 Extracción de Cheques:</strong> Procesar información bancaria</li>
+                        <li><strong>📱 Apps de Traducción:</strong> Traducir texto de imágenes en tiempo real</li>
+                        <li><strong>♿ Accesibilidad:</strong> Leer texto en voz alta para personas con discapacidad visual</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🔧 Ejemplo Completo con Mejoras</h3>
+                <div class="code-container">
+                    <pre>
+import cv2
+import pytesseract
+import numpy as np
+
+# Configurar Tesseract
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+def extraer_texto(ruta_imagen):
+    """
+    Extrae texto de una imagen con preprocesamiento optimizado
+    """
+    try:
+        # Cargar imagen
+        img = cv2.imread(ruta_imagen)
+        
+        if img is None:
+            print("❌ Error: No se pudo cargar la imagen")
+            return None
+        
+        # Redimensionar si es muy grande
+        altura, ancho = img.shape[:2]
+        if ancho > 1600:
+            escala = 1600 / ancho
+            img = cv2.resize(img, None, fx=escala, fy=escala)
+        
+        # Convertir a escala de grises
+        gris = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        
+        # Reducir ruido
+        sin_ruido = cv2.medianBlur(gris, 3)
+        
+        # Binarización adaptativa
+        binaria = cv2.adaptiveThreshold(sin_ruido, 255,
+                                         cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                         cv2.THRESH_BINARY, 11, 2)
+        
+        # Configurar OCR
+        config = '--psm 6 --oem 3'
+        
+        # Extraer texto
+        texto = pytesseract.image_to_string(binaria, lang="spa", config=config)
+        
+        # Obtener confianza
+        datos = pytesseract.image_to_data(binaria, lang="spa", output_type=pytesseract.Output.DICT)
+        confianzas = [int(c) for c in datos['conf'] if c != '-1']
+        confianza_promedio = sum(confianzas) / len(confianzas) if confianzas else 0
+        
+        # Mostrar imagen procesada
+        cv2.imshow("Original", img)
+        cv2.imshow("Procesada", binaria)
+        
+        print("\n" + "="*50)
+        print("TEXTO EXTRAÍDO:")
+        print("="*50)
+        print(texto)
+        print("="*50)
+        print(f"Confianza promedio: {confianza_promedio:.2f}%\n")
+        
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        
+        return texto
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return None
+
+# Usar la función
+if __name__ == '__main__':
+    texto_extraido = extraer_texto('casa-memes-imagenes-2.jpg')
+                    </pre>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>⚠️ Consideraciones y Limitaciones</h3>
+
+                <div class="glosario-item">
+                    <h4>Calidad de la Imagen</h4>
+                    <p>OCR funciona mejor con imágenes de alta calidad, bien iluminadas y con texto claro. Texto borroso, distorsionado o con fondos complejos reduce la precisión.</p>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Fuentes y Estilos</h4>
+                    <p>Tesseract reconoce mejor fuentes estándar. Texto manuscrito, cursivas elaboradas o fuentes decorativas pueden no reconocerse correctamente.</p>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Orientación del Texto</h4>
+                    <p>El texto debe estar horizontal. Texto rotado o inclinado necesita corrección de orientación previa.</p>
+                    <div class="code-container" style="margin-top: 10px;">
+                        <pre>
+# Detectar y corregir orientación
+osd = pytesseract.image_to_osd(imagen)
+angulo = int(osd.split('\n')[2].split(':')[1].strip())
+
+# Rotar imagen
+(h, w) = imagen.shape[:2]
+centro = (w // 2, h // 2)
+M = cv2.getRotationMatrix2D(centro, angulo, 1.0)
+rotada = cv2.warpAffine(imagen, M, (w, h))
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="glosario-item">
+                    <h4>Rendimiento</h4>
+                    <p>OCR puede ser lento en imágenes grandes. Considera redimensionar o procesar por regiones para
